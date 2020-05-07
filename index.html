@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+  <title>wife's note app</title>
+  <meta charset="utf-8">
+  <script src="jquery-3.5.0.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <header>
+    <h2>wife's note app</h2>
+  </header>
+  <input placeholder="title" id="title">
+  <br>
+  <textarea name="name" rows="8" cols="80" id="content"></textarea>
+  <br>
+  <button id="submit">Submit</button>
+  <br>
+  <div id="notes">
+
+  </div>
+</body>
+<script>
+  var socket = io()
+  $(() =>{
+    $("#submit").click(()=>{
+      var note = {title:$("#title").val(), content:$("#content").val()}
+      postNotes(note)
+    })
+    getNotes()
+  })
+
+  socket.on('note', addNote)
+
+  function addNote(note){
+    $("#notes").append(`<h3> ${note.title} </h3> <p> ${note.content} </p>`)
+  }
+
+  function getNotes(){
+    $.get('http://localhost:3000/notes', (data) => {
+      data.forEach(function(element){
+          addNote(element)
+        }, this)
+      })
+    }
+
+    function postNotes(note){
+      $.post('http://localhost:3000/notes', note)
+      }
+
+</script>
